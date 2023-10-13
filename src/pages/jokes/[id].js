@@ -1,5 +1,4 @@
 // import axios from '@/helpers/axios';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 
 export default function Joke({ isRequestFailed, joke }) {
@@ -44,42 +43,47 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
 	const id = context.params.id;
+	const url =
+		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search?query=bam';
+	const options = {
+		method: 'GET',
+		headers: {
+			accept: 'application/json',
+			'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
+			'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
+		},
+	};
 
-	const { data, status } = await axios.get(
-		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search',
-		{
-			headers: {
-				accept: 'application/json',
-				'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
-				'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
-			},
-			params: {
-				query: 'bam',
-			},
+	try {
+		const response = await fetch(url, options);
+		if (response.status !== 200) {
+			throw new Error(
+				`Network response was not ok, status: ${response.status}`
+			);
 		}
-	);
 
-	if (!status === 200) {
+		const data = await response.json();
+		const joke = data.result.find((object) => object.id == id);
+
+		if (!joke) {
+			return {
+				notFound: true,
+			};
+		}
+
+		return {
+			props: {
+				isRequestFailed: false,
+				isIdValid: true,
+				joke: joke,
+			},
+		};
+	} catch (error) {
+		console.error('Błąd:', error);
 		return {
 			props: {
 				isRequestFailed: true,
 			},
 		};
 	}
-
-	const joke = data.result.find((object) => object.id == id);
-
-	if (!joke) {
-		return {
-			notFound: true,
-		};
-	}
-
-	return {
-		props: {
-			isRequestFailed: false,
-			isIdValid: true,
-			joke: joke,
-		},
-	};
 }

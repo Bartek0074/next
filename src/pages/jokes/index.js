@@ -47,32 +47,39 @@ export default function Home({ isRequestFailed, jokes }) {
 }
 
 export async function getStaticProps() {
-	const { data, status } = await axios.get(
-		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search',
-		{
-			headers: {
-				accept: 'application/json',
-				'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
-				'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
-			},
-			params: {
-				query: 'bam',
-			},
-		}
-	);
+	const url =
+		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search?query=bam';
+	const options = {
+		method: 'GET',
+		headers: {
+			accept: 'application/json',
+			'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
+			'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
+		},
+	};
 
-	if (!status === 200) {
+	try {
+		const response = await fetch(url, options);
+		if (response.status !== 200) {
+			throw new Error(
+				`Network response was not ok, status: ${response.status}`
+			);
+		}
+
+		const data = await response.json();
+
+		return {
+			props: {
+				isRequestFailed: false,
+				jokes: data.result,
+			},
+		};
+	} catch (error) {
+		console.error('Błąd:', error);
 		return {
 			props: {
 				isRequestFailed: true,
 			},
 		};
 	}
-
-	return {
-		props: {
-			isRequestFailed: false,
-			jokes: data.result,
-		},
-	};
 }
