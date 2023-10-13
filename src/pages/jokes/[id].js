@@ -1,4 +1,5 @@
-import axios from '@/helpers/axios';
+// import axios from '@/helpers/axios';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 
 export default function Joke({ isRequestFailed, joke }) {
@@ -11,7 +12,7 @@ export default function Joke({ isRequestFailed, joke }) {
 			</div>
 		);
 	}
-	
+
 	if (isRequestFailed) {
 		return (
 			<div>
@@ -27,7 +28,10 @@ export default function Joke({ isRequestFailed, joke }) {
 			<p style={{ marginBottom: 10 }}>Data dodania: {joke.updated_at}</p>
 			<div style={{ display: 'flex' }}>
 				<p>Przejdź do strony z listą żartów:</p>
-				<button style={{ marginLeft: 20 }} onClick={() => router.push('/jokes')}>
+				<button
+					style={{ marginLeft: 20 }}
+					onClick={() => router.push('/jokes')}
+				>
 					Click!
 				</button>
 			</div>
@@ -41,11 +45,19 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
 	const id = context.params.id;
 
-	const { data, status } = await axios.get('/jokes/search', {
-		params: {
-			query: 'bam',
-		},
-	});
+	const { data, status } = await axios.get(
+		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search',
+		{
+			headers: {
+				accept: 'application/json',
+				'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
+				'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
+			},
+			params: {
+				query: 'bam',
+			},
+		}
+	);
 
 	if (!status === 200) {
 		return {

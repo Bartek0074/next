@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 export default axios.create({
 	baseURL: 'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
 	headers: {

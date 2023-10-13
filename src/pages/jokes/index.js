@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import axios from '@/helpers/axios';
+// import axios from '@/helpers/axios';
+import axios from 'axios';
 
 export default function Home({ isRequestFailed, jokes }) {
 	const router = useRouter();
-	
+
 	if (isRequestFailed) {
 		return (
 			<div>
@@ -46,11 +47,19 @@ export default function Home({ isRequestFailed, jokes }) {
 }
 
 export async function getStaticProps() {
-	const { data, status } = await axios.get('/jokes/search', {
-		params: {
-			query: 'bam',
-		},
-	});
+	const { data, status } = await axios.get(
+		'https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/search',
+		{
+			headers: {
+				accept: 'application/json',
+				'X-RapidAPI-Key': '0305113434msh91a23d7be1ae531p1c4c59jsnff5ea436e476',
+				'X-RapidAPI-Host': 'matchilling-chuck-norris-jokes-v1.p.rapidapi.com',
+			},
+			params: {
+				query: 'bam',
+			},
+		}
+	);
 
 	if (!status === 200) {
 		return {
