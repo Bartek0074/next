@@ -12,7 +12,7 @@ export default function Layout({ children }) {
 					backgroundColor: '#f2f2f2',
 				}}
 			>
-				<p style={{ fontSize: 20 }}>Kawały o Chucku</p>
+				<p style={{ fontSize: 20 }}>Kraje świata</p>
 			</div>
 			{children}
 		</>
